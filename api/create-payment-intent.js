@@ -11,7 +11,7 @@ const { Resend } = require('resend');
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
  
 const OWNER_EMAIL = 'cookiedojojax@gmail.com';
-const FROM_EMAIL  = 'orders@cookiedojo.com'; // set up in Resend after domain connects
+const FROM_EMAIL = 'Cookie Dojo <onboarding@resend.dev>';
  
 function generateOrderId() {
   return 'CD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
