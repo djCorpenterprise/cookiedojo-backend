@@ -1,4 +1,5 @@
-// Cookie Dojo — Payment Intent + Email Notifications
+/if (resend) {
+  / Cookie Dojo — Payment Intent + Email Notifications
 // Vercel Serverless Function
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { Resend } = require('resend');
@@ -153,6 +154,8 @@ module.exports = async (req, res) => {
 
     // 2. Send emails — each wrapped independently so one failure never blocks the other
     console.log('Attempting emails for order', orderId, '| Resend configured:', !!resend);
+            console.log('DEBUG: RESEND_API_KEY value:', process.env.RESEND_API_KEY);
+            console.log('DEBUG: resend object exists:', !!resend);
     if (resend) {
       // Owner notification FIRST — most critical
       resend.emails.send({
