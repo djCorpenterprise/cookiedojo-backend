@@ -152,15 +152,15 @@ module.exports = async (req, res) => {
     });
 
     // 2. Send emails — each wrapped independently so one failure never blocks the other
+    console.log('Attempting emails for order', orderId, '| Resend configured:', !!resend);
     if (resend) {
       // Owner notification FIRST — most critical
       resend.emails.send({
         from: FROM_EMAIL,
         to: OWNER_EMAIL,
-        replyTo: customer_email,
         subject: `🛎 New Order ${orderId} — $${total.toFixed(2)} from ${customer_name}`,
         html: ownerNotificationHTML({ orderId, name: customer_name, email: customer_email, phone: customer_phone || '', items, total, address: address || '', notes: notes || '' }),
-      }).catch(err => console.error('Owner email failed:', err.message));
+      }).then(r => console.log('Owner email result:', JSON.stringify(r))).catch(err => console.error('Owner email FAILED:', err.message, err.statusCode));
 
       // Customer receipt
       resend.emails.send({
@@ -168,7 +168,7 @@ module.exports = async (req, res) => {
         to: customer_email,
         subject: `Your Cookie Dojo Order is Confirmed! (${orderId})`,
         html: customerReceiptHTML({ orderId, name: customer_name, items, total, address: address || '', notes: notes || '' }),
-      }).catch(err => console.error('Customer email failed:', err.message));
+      }).then(r => console.log('Customer email result:', JSON.stringify(r))).catch(err => console.error('Customer email FAILED:', err.message, err.statusCode));
     } else {
       console.warn('RESEND_API_KEY not set — emails skipped for order', orderId);
     }
